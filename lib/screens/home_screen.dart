@@ -20,6 +20,7 @@ class HomeScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            leading: const Icon(Icons.home, color: Colors.white),
             backgroundColor: Colors.red,
             title: const Text(
               'Hydra Teammates',

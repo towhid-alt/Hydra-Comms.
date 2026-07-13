@@ -1,14 +1,16 @@
 import 'package:chat_app/business_logic/bloc/auth_bloc.dart';
+import 'package:chat_app/presentation/router/app_router.dart';
 import 'package:chat_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+   MyApp({super.key});
+  final AppRouter _appRouter = AppRouter();
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +35,15 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.red,
           useMaterial3: true,
         ),
-        home: const LoginScreen(),
+        onGenerateRoute: _appRouter.onGenerateRoute,
+        initialRoute: '/login',
       ),
     );
+  }
+
+  @override 
+  void dispose() {
+    _appRouter.dispose();
+    
   }
 }
