@@ -1,0 +1,23 @@
+### TEST
+GET http://localhost:3000/test
+
+### SIGNUP
+POST http://localhost:3000/api/signup
+Content-Type: application/json
+
+{
+  "username": "bilbo",
+  "password": "baggins@shire"
+}
+
+### LOGIN
+POST https://interroad-nontragical-odessa.ngrok-free.dev/api/login
+Content-Type: application/json
+
+{
+  "username": "bilbo",
+  "password": "baggins@shire"
+}
+
+### GET USERS
+GET https://interroad-nontragical-odessa.ngrok-free.dev/api/users
