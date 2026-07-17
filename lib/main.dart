@@ -1,4 +1,5 @@
-import 'package:chat_app/business_logic/bloc/auth_bloc.dart';
+import 'package:chat_app/business_logic/bloc/auth/auth_bloc.dart';
+import 'package:chat_app/business_logic/bloc/fetchUsers/bloc/fetch_users_bloc.dart';
 import 'package:chat_app/presentation/router/app_router.dart';
 import 'package:chat_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,10 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
+
+        BlocProvider<FetchUsersBloc>(
+          create: (context) => FetchUsersBloc(),
+        ),
       ],
       child: MaterialApp(
         title: 'Hydra Comms',
@@ -36,7 +41,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         onGenerateRoute: _appRouter.onGenerateRoute,
-        initialRoute: '/login',
+        initialRoute: '/',
       ),
     );
   }

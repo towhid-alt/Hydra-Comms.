@@ -1,4 +1,4 @@
-import 'package:chat_app/business_logic/bloc/auth_bloc.dart';
+import 'package:chat_app/business_logic/bloc/auth/auth_bloc.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
           // Navigate to home screen
           Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => const HomeScreen()));
+            context, MaterialPageRoute(builder: (context) =>  HomeScreen()));
           
           // Navigator.pushReplacementNamed(context, '/home');
         } else if (state is AuthError) {
@@ -81,127 +81,129 @@ class _LoginScreenState extends State<LoginScreen> {
 
       builder: (context, state) {
         return Scaffold(
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              Image.asset('assets/images/hydra.png', width: 200, height: 200),
-              const SizedBox(height: 20),
-              const Center(
-                child: Text(
-                  'Hydra Comms.',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 255, 38, 38),
-                    fontSize: 24,
-                    fontFamily: 'Code',
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 50),
-              const Center(
-                child: Text(
-                  'Log In',
-                  style: TextStyle(
-                    fontFamily: 'Code',
-                    fontSize: 34,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.lime,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 300,
-                child: TextField(
-                  style: const TextStyle(
-                    color: Colors.lime,
-                    fontFamily: 'Code',
-                  ),
-                  controller: _usernameController,
-                  cursorColor: Colors.lime,
-                  enabled: state is! AuthLoading,
-                  decoration: const InputDecoration(
-                    labelText: 'Username',
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.lime),
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const SizedBox(height: 60),
+                Image.asset('assets/images/hydra.png', width: 200, height: 200),
+                const SizedBox(height: 20),
+                const Center(
+                  child: Text(
+                    'Hydra Comms.',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 255, 38, 38),
+                      fontSize: 24,
+                      fontFamily: 'Code',
+                      fontWeight: FontWeight.bold,
                     ),
-                    labelStyle: TextStyle(
+                  ),
+                ),
+                const SizedBox(height: 50),
+                const Center(
+                  child: Text(
+                    'Log In',
+                    style: TextStyle(
+                      fontFamily: 'Code',
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.lime,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                    style: const TextStyle(
                       color: Colors.lime,
                       fontFamily: 'Code',
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                width: 300,
-                child: TextField(
-                  style: const TextStyle(
-                    color: Colors.lime,
-                    fontFamily: 'Code',
-                  ),
-                  controller: _passwordController,
-                  obscureText: _obscureText,
-                  cursorColor: Colors.lime,
-                  enabled: state is! AuthLoading,
-                  onSubmitted: (_) => _handleLogin(),
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.lime),
-                    ),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscureText ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.lime,
+                    controller: _usernameController,
+                    cursorColor: Colors.lime,
+                    enabled: state is! AuthLoading,
+                    decoration: const InputDecoration(
+                      labelText: 'Username',
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.lime),
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscureText = !_obscureText;
-                        });
-                      },
+                      labelStyle: TextStyle(
+                        color: Colors.lime,
+                        fontFamily: 'Code',
+                      ),
                     ),
-                    labelStyle: const TextStyle(
+                  ),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 300,
+                  child: TextField(
+                    style: const TextStyle(
                       color: Colors.lime,
                       fontFamily: 'Code',
                     ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 30),
-              SizedBox(
-                width: 300,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: state is AuthLoading ? null : _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 219, 255, 57),
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                    controller: _passwordController,
+                    obscureText: _obscureText,
+                    cursorColor: Colors.lime,
+                    enabled: state is! AuthLoading,
+                    onSubmitted: (_) => _handleLogin(),
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: const OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.lime),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscureText ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.lime,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                      ),
+                      labelStyle: const TextStyle(
+                        color: Colors.lime,
+                        fontFamily: 'Code',
+                      ),
                     ),
                   ),
-                  child: state is AuthLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontFamily: 'Code',
-                            fontSize: 18,
-                          ),
-                        ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 30),
+                SizedBox(
+                  width: 300,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: state is AuthLoading ? null : _handleLogin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 219, 255, 57),
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: state is AuthLoading
+                        ? const SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Text(
+                            'Login',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: 'Code',
+                              fontSize: 18,
+                            ),
+                          ),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

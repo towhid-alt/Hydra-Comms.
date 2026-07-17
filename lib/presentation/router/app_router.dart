@@ -1,4 +1,4 @@
-import 'package:chat_app/business_logic/bloc/auth_bloc.dart';
+import 'package:chat_app/business_logic/bloc/auth/auth_bloc.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +11,14 @@ class AppRouter {
   
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
+      case '/': //Never miss this case, its the default route when the app starts
+        return MaterialPageRoute(builder: (_) => BlocProvider.value(
+          value: _authBloc,
+          child: const LoginScreen()));
       case '/home':
         return MaterialPageRoute(builder: (_) => BlocProvider.value(
           value: _authBloc,
-          child: const HomeScreen()));
+          child:  HomeScreen()));
       case '/login':
         return MaterialPageRoute(builder: (_) => BlocProvider.value(
           value: _authBloc,

@@ -6,7 +6,7 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 
 app.get('/test', (req,res) => {
@@ -70,10 +70,12 @@ app.post('/api/login', async (req,res) => {
     }
 })
 
+//--------------FETCH USERS ENDPOINT----------------
 app.get('/api/users', async (req, res) => {
     try {
-        const users = await pool.query('SELECT id, username FROM users')
-        res.status(200).json(users.rows)
+        const users = await pool.query('SELECT id, username FROM users ORDER BY username')
+        console.log('Fetched users:', users.rows)
+        res.status(200).json({ users: users.rows })
     } catch (error) {
         console.error('Error fetching users:', error)
         res.status(500).json({ error: 'Internal server error' })
