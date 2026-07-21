@@ -27,7 +27,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
 
       if (response['success']) {
-        emit(AuthAuthenticated(username: event.username));
+        emit(AuthAuthenticated( userId: response['user']['id'], username: event.username));
+        
       } else {
         emit(AuthError(message: response['error'] ?? 'Login failed'));
       }
@@ -67,6 +68,8 @@ class AuthService {
       final data = jsonDecode(response.body); // Converts the server's JSON response back into a Dart object (Map<String, dynamic>)
 
       if (response.statusCode == 200) {
+        final userId = data['user']['id'];
+        final username = data ['user']['username'];
         return {'success': true, 'message': data['message']};
       } else {
         return {

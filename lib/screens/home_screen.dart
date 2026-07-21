@@ -1,5 +1,6 @@
 import 'package:chat_app/business_logic/bloc/auth/auth_bloc.dart';
 import 'package:chat_app/business_logic/bloc/fetchUsers/bloc/fetch_users_bloc.dart';
+import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,11 +13,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // bool isLoading = true;
 
   Future<void> fetchUsers() async {
     context.read<FetchUsersBloc>().add(FetchUsers());
   }
+
   
   @override
   void initState() {
@@ -27,15 +28,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
-      listener: (context, state) {
+     listener: (context, state) {
         if (state is AuthUnauthenticated) {
-          Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const LoginScreen()),
-            (Route<dynamic> route) => false, // Removes all previous routes
+          Navigator.pushNamedAndRemoveUntil(
+            context, '/login',
+             (route) => false, // Removes all previous routes
           );
         }
       },
       builder: (context, state) {
+        //Safely extract the current username
+        final currentUser = state is AuthAuthenticated ? state.username : '';
         return Scaffold(
           appBar: AppBar(
             leading: const Icon(Icons.home, color: Colors.white),
@@ -62,13 +65,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is FetchUsersLoaded) {
                 final users = state.users;
-                return ListView.builder(
+                return ListView.separated(
                   itemCount: users.length,
+                  separatorBuilder: (context, index) => const Divider(
+                    color: Colors.white,
+                    thickness: 1,
+                    height: 1,
+                  ),
                   itemBuilder: (context, index) {
                     final user = users[index];
+                    final username = user['username'];
+                    print('Current user - $currentUser');
+                    final displayName = (username == currentUser) ? '$username (You)' : username;
                     return ListTile(
-                      title: Text(user['username']),
+                      title: Text(displayName, 
+                      style:  const TextStyle(color: Colors.white, fontFamily: 'Code',fontSize: 25)),
                       //subtitle: Text('ID: ${user['id']}'),
+                      onTap: () {
+                        Navigator.pushNamed(context, '/chat');
+                      },
                     );
                   },
                 );
@@ -82,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
               }
               return const SizedBox.shrink();
             },
+
           ),
         );
       },

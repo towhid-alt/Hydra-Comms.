@@ -6,8 +6,8 @@ POST http://localhost:3000/api/signup
 Content-Type: application/json
 
 {
-  "username": "bilbo",
-  "password": "baggins@shire"
+  "username": "Aragorn",
+  "password": "aragorn@middleearth"
 }
 
 ### LOGIN

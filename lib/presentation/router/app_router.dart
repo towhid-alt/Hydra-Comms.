@@ -1,4 +1,5 @@
 import 'package:chat_app/business_logic/bloc/auth/auth_bloc.dart';
+import 'package:chat_app/screens/chat_screen.dart';
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:chat_app/screens/signup_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,18 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => BlocProvider.value(
           value: _authBloc,
           child: const LoginScreen()));
+      case '/chat':
+        final args = settings.arguments as Map<String, dynamic>;
+        final otherUserId = args['otherUserId'];
+        final otherUsername = args['otherUsername'];
+
+        //Getting user info from the AuthBloc
+        final authState = _authBloc.state;
+        final currentUserId = authState is AuthAuthenticated ? authState.userId: '';
+        final currentUsername = authState is AuthAuthenticated? authState.username : '';
+        return MaterialPageRoute(builder: (_) => BlocProvider.value(
+          value: _authBloc,
+          child: ChatScreen(currentUserId: currentUserId, currentUsername: currentUsername, otherUserId: otherUserId, otherUsername: otherUsername,),));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

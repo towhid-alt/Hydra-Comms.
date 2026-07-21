@@ -64,8 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
           );
           // Navigate to home screen
-          Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) =>  HomeScreen()));
+          Navigator.pushReplacementNamed(
+            context,'/home');
           
           // Navigator.pushReplacementNamed(context, '/home');
         } else if (state is AuthError) {
