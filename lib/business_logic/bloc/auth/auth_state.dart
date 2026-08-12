@@ -12,13 +12,14 @@ class AuthInitial extends AuthState {}
 class AuthLoading extends AuthState {}
 
 class AuthAuthenticated extends AuthState {
-  final String userId;
+  //final String userId;
+  final dynamic userId; // Change to dynamic to handle both int and String
   final String username;
 
   const AuthAuthenticated({required this.userId, required this.username});
 
   @override
-  List<Object> get props => [username];
+  List<Object> get props => [userId, username];
 }
 
 class AuthUnauthenticated extends AuthState {}

@@ -6,8 +6,8 @@ POST http://localhost:3000/api/signup
 Content-Type: application/json
 
 {
-  "username": "Aragorn",
-  "password": "aragorn@middleearth"
+  "username": "a",
+  "password": "a"
 }
 
 ### LOGIN
@@ -15,9 +15,23 @@ POST https://interroad-nontragical-odessa.ngrok-free.dev/api/login
 Content-Type: application/json
 
 {
-  "username": "bilbo",
-  "password": "baggins@shire"
+  "username": "a",
+  "password": "a"
 }
 
 ### GET USERS
 GET https://interroad-nontragical-odessa.ngrok-free.dev/api/users
+
+###DELETE A USER
+DELETE https://interroad-nontragical-odessa.ngrok-free.dev/api/deleteUser
+Content-Type: application/json
+
+{
+  "username": "Aragorn"
+}
+
+###SHOW ALL MESSAGES
+GET https://interroad-nontragical-odessa.ngrok-free.dev/api/messages
+
+###DELETE ALL MESSAGES
+DELETE https://interroad-nontragical-odessa.ngrok-free.dev/api/deleteMessages

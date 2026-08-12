@@ -1,4 +1,5 @@
 import 'package:chat_app/business_logic/bloc/auth/auth_bloc.dart';
+import 'package:chat_app/business_logic/bloc/chat/chat_bloc.dart';
 import 'package:chat_app/business_logic/bloc/fetchUsers/bloc/fetch_users_bloc.dart';
 import 'package:chat_app/presentation/router/app_router.dart';
 import 'package:chat_app/screens/signup_screen.dart';
@@ -31,6 +32,8 @@ class MyApp extends StatelessWidget {
         BlocProvider<FetchUsersBloc>(
           create: (context) => FetchUsersBloc(),
         ),
+
+        BlocProvider(create: (context) => ChatBloc())
       ],
       child: MaterialApp(
         title: 'Hydra Comms',

@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, state) {
         //Safely extract the current username
         final currentUser = state is AuthAuthenticated ? state.username : '';
+        final currentUserId = state is AuthAuthenticated ? state.userId : '';
         return Scaffold(
           appBar: AppBar(
             leading: const Icon(Icons.home, color: Colors.white),
@@ -74,15 +75,22 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   itemBuilder: (context, index) {
                     final user = users[index];
-                    final username = user['username'];
-                    print('Current user - $currentUser');
+                    final userId = user['id'] ?? '';
+                    final username = user['username'] ?? '';
                     final displayName = (username == currentUser) ? '$username (You)' : username;
                     return ListTile(
                       title: Text(displayName, 
                       style:  const TextStyle(color: Colors.white, fontFamily: 'Code',fontSize: 25)),
                       //subtitle: Text('ID: ${user['id']}'),
                       onTap: () {
-                        Navigator.pushNamed(context, '/chat');
+                        //FIXME: Current userId shows empty in log
+                        print('📨Navigating to chat with userId: $userId,receiver: $username, currentUserId: $currentUserId, currentUsername: $currentUser');
+                        Navigator.pushNamed(context, '/chat', 
+                        arguments: {
+                          'currentUserId': currentUserId,
+                          'receiverId': userId,
+                          'receiverName': username,
+                        });
                       },
                     );
                   },

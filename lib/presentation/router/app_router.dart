@@ -6,36 +6,54 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AppRouter {
-  final AuthBloc _authBloc = AuthBloc(authService: AuthService(
-    baseUrl: 'https://interroad-nontragical-odessa.ngrok-free.dev', // Change this based on your environment
-  ));
-  
+  final AuthBloc _authBloc = AuthBloc(
+    authService: AuthService(
+      baseUrl:
+          'https://interroad-nontragical-odessa.ngrok-free.dev', // Change this based on your environment
+    ),
+  );
+
   Route onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
       case '/': //Never miss this case, its the default route when the app starts
-        return MaterialPageRoute(builder: (_) => BlocProvider.value(
-          value: _authBloc,
-          child: const LoginScreen()));
+        return MaterialPageRoute(
+          builder: (_) =>
+              BlocProvider.value(value: _authBloc, child: const LoginScreen()),
+        );
       case '/home':
-        return MaterialPageRoute(builder: (_) => BlocProvider.value(
-          value: _authBloc,
-          child:  HomeScreen()));
+        return MaterialPageRoute(
+          builder: (_) =>
+              BlocProvider.value(value: _authBloc, child: HomeScreen()),
+        );
       case '/login':
-        return MaterialPageRoute(builder: (_) => BlocProvider.value(
-          value: _authBloc,
-          child: const LoginScreen()));
+        return MaterialPageRoute(
+          builder: (_) =>
+              BlocProvider.value(value: _authBloc, child: const LoginScreen()),
+        );
       case '/chat':
         final args = settings.arguments as Map<String, dynamic>;
-        final otherUserId = args['otherUserId'];
-        final otherUsername = args['otherUsername'];
-
+        final otherUserId = args['receiverId'] ?? '';
+        final otherUsername = args['receiverName'] ?? '';
+        final otherUserIdString = otherUserId.toString(); //to avoid type error
         //Getting user info from the AuthBloc
         final authState = _authBloc.state;
-        final currentUserId = authState is AuthAuthenticated ? authState.userId: '';
-        final currentUsername = authState is AuthAuthenticated? authState.username : '';
-        return MaterialPageRoute(builder: (_) => BlocProvider.value(
-          value: _authBloc,
-          child: ChatScreen(currentUserId: currentUserId, currentUsername: currentUsername, otherUserId: otherUserId, otherUsername: otherUsername,),));
+        final currentUserId = authState is AuthAuthenticated
+            ? authState.userId
+            : '';
+        final currentUsername = authState is AuthAuthenticated
+            ? authState.username
+            : '';
+
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider.value(
+            value: _authBloc,
+            child: ChatScreen(
+              currentUserId: currentUserId,
+              receiverId: otherUserIdString,
+              receiverName: otherUsername,
+            ),
+          ),
+        ); 
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
