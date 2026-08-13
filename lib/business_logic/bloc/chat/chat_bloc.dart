@@ -34,8 +34,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatLoading());
 
       currentUserId = event.userId;
-      messages.clear();
-      print('🚮Local messages list cleared on Connect socket');//FIXME:
+      //messages.clear();
+      //print('🚮Local messages list cleared on Connect socket');//FIXME:
 
       
 
@@ -43,9 +43,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       // Connect to socket
       _socketService.connect(event.userId);
 
-      //FIXME: This code block below is not running
+      
       // Listen for incoming messages
-      _socketService.onMessageReceived((message) {//TODO: Study this function in detail. VERY USEFUL!!
+      _socketService.onMessageReceived((message) {//TODO: Study this function in detail. VERY USEFUL!! UNDERSTAND THE CODE FLOW
         //This runs when a message is received from the socket
         // Add event to BLoC when message is received
         print('🚩Running ReceiveMessageEvent');
@@ -101,8 +101,8 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   // Handle receiving message
   void _onReceiveMessage(ReceiveMessageEvent event, Emitter<ChatState> emit) {
-    //FIXME: This function is not running after server emits messages to both users
-    //messages.clear();//FIXME:So that the whole local list doesnt get built again in UI
+  
+    
     print('🚩_onReceiveMessage code running');
     // Add received message to list
     messages.add(event.message);
@@ -111,7 +111,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       print('👺Local List content in _onReceiveMessage:${messages.length}');//FIXME:Debug code
       emit(ChatConnected(messages: messages, isConnected: true));
     }
-
+  messages.clear();//FIXME:So that the whole local list doesnt get built again in UI
   }
 
   void _onFetchChatHistory(

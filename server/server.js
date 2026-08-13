@@ -53,8 +53,15 @@ io.on('connection', (socket) => {
 
       // Emit message to both sender and receiver
       console.log('🚩Emitting message to both sender and receiver');
-      io.to(data.senderId.toString()).emit('receiveMessage', result.rows[0]);
-      io.to(data.receiverId.toString()).emit('receiveMessage', result.rows[0]);
+      const senderId = onlineUsers[data.senderId]
+      const receiverId = onlineUsers[data.receiverId]
+      if(senderId){
+        io.to(senderId.toString()).emit('receiveMessage', result.rows[0]);
+      }
+      if(receiverId){
+        io.to(receiverId.toString()).emit('receiveMessage', result.rows[0]);
+      }
+      
     } catch (error) {
       console.error('Error saving message to database:', error);
     }
