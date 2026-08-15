@@ -15,11 +15,15 @@ class SocketService {
 
   // Connect to the server
   void connect(String userId) {
-    socket = IO.io('https://interroad-nontragical-odessa.ngrok-free.dev', <String, dynamic>{ //TODO: Change the server url
-      'transports': ['websocket'],
-      'autoConnect': true,
-      'query': {'userId': userId},
-    });
+    socket = IO.io(
+      'https://interroad-nontragical-odessa.ngrok-free.dev',
+      <String, dynamic>{
+        //TODO: Change the server url
+        'transports': ['websocket'],
+        'autoConnect': true,
+        'query': {'userId': userId},
+      },
+    );
 
     socket.onConnect((_) {
       print('Socket connected');
@@ -46,26 +50,27 @@ class SocketService {
         'receiverId': message.receiverId,
         'text': message.text,
       });
-     
     }
   }
 
   // Listen for incoming messages
-void onMessageReceived(Function(Message) callback) {
-  print('🟢 Registering onMessageReceived listener');
-  socket.off('receiveMessage');
-  socket.on('receiveMessage', (data) {
-    print('🚩socket.on of receiveMessage event running');
-    print('📦 Received data: $data');
-    try {
-      final message = Message.fromJson(data);
-      print('✅ Message parsed: ${message.text}');
-      callback(message);
-    } catch (e) {
-      print('❌ Error parsing message: $e');
-    }
-  });
-}
+  void onMessageReceived(Function(Message) callback) {
+    print('🟢 Registering onMessageReceived listener');
+    //socket.off('receiveMessage');//FIXME: It is turning off all the listeners thats y event is not firing
+    socket.on('receiveMessage', (data) {
+      print('🚩socket.on of receiveMessage event running');
+      print('📦 Received data: $data');
+      try {
+        final message = Message.fromJson(data);
+        print('✅ Message parsed: ${message.text}');
+        callback(message);
+        print('🛑Turning off \'receiveMessage\' event');//FIXME:
+        socket.off('receiveMessage');
+      } catch (e) {
+        print('❌ Error parsing message: $e');
+      }
+    });
+  }
 
   // Disconnect
   void disconnect() {

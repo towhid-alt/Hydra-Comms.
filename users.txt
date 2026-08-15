@@ -1,3 +1,2 @@
-USER 1: NAME - bilbo, PASSWORD - baggins@shire
-USER 2: NAME - Aragorn, PASSWORD - aragorn@middleearth
-USER 3: NAME - a, PASSWORD - a
+USER 2: NAME - panther, PASSWORD - @wakanda
+USER 3: NAME - captain, PASSWORD - @america

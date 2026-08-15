@@ -88,135 +88,142 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.receiverName),
-        backgroundColor: Colors.blue,
+        title: Text(widget.receiverName, style: TextStyle(fontFamily: 'Code'),),
+        backgroundColor: const Color.fromARGB(255, 255, 75, 35),
         foregroundColor: Colors.white,
       ),
-      body: BlocBuilder<ChatBloc, ChatState>(
-        builder: (context, state) {
-          if (state is ChatLoading) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (state is ChatError) {
-            
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.error_outline, size: 64, color: Colors.red),
-                  const SizedBox(height: 16),
-                  Text(
-                    state.error,
-                    style: const TextStyle(fontSize: 16),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<ChatBloc>().add(
-                        ConnectSocketEvent(userId: widget.currentUserId),
-                      );
-                    },
-                    child: const Text('Reconnect'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          if (state is ChatConnected) {
-            return Column(
-              children: [
-                // Messages List
-                Expanded(
-                  child: state.messages.isEmpty//TODO: This is causing the problem when you empty the local list
-                      ? const Center(
-                          child: Text(
-                            'No messages yet',
-                            style: TextStyle(fontSize: 16, color: Colors.grey),
-                          ),
-                        )
-                      : ListView.builder(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          itemCount: state.messages.length,
-                          itemBuilder: (context, index) {
-                            final message = state.messages[index];
-                            final isOwnMessage =
-                                message.senderId == widget.currentUserId;
-
-                            return _buildMessageItem(
-                              message: message,
-                              isOwnMessage: isOwnMessage,
-                            );
-                          
-                          },
-                        ),
+      //extendBodyBehindAppBar: true,
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(image: AssetImage('assets/images/hydra.png'),
+          fit: BoxFit.cover)
+        ),
+        child: BlocBuilder<ChatBloc, ChatState>(
+          builder: (context, state) {
+            if (state is ChatLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+        
+            if (state is ChatError) {
+              
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error_outline, size: 64, color: Colors.red),
+                    const SizedBox(height: 16),
+                    Text(
+                      state.error,
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.read<ChatBloc>().add(
+                          ConnectSocketEvent(userId: widget.currentUserId),
+                        );
+                      },
+                      child: const Text('Reconnect'),
+                    ),
+                  ],
                 ),
-                // Message Input
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, -2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _messageController,
-                          decoration: InputDecoration(
-                            hintText: 'Type a message...',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: BorderSide.none,
+              );
+            }
+        
+            if (state is ChatConnected) {
+              return Column(
+                children: [
+                  // Messages List
+                  Expanded(
+                    child: state.messages.isEmpty//TODO: This is causing the problem when you empty the local list
+                        ? const Center(
+                            child: Text(
+                              'No messages yet',
+                              style: TextStyle(fontSize: 16, color: Colors.grey),
                             ),
-                            filled: true,
-                            fillColor: Colors.grey.shade100,
-                            contentPadding: const EdgeInsets.symmetric(
+                          )
+                        : ListView.builder(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.symmetric(
                               horizontal: 16,
                               vertical: 8,
                             ),
+                            itemCount: state.messages.length,
+                            itemBuilder: (context, index) {
+                              final message = state.messages[index];
+                              final isOwnMessage =
+                                  message.senderId == widget.currentUserId;
+        
+                              return _buildMessageItem(
+                                message: message,
+                                isOwnMessage: isOwnMessage,
+                              );
+                            
+                            },
                           ),
-                          onSubmitted: (_) => _sendMessage(),
-                          maxLines: null,
-                          textInputAction: TextInputAction.send,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Container(
-                        decoration: const BoxDecoration(
-                          color: Colors.blue,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.send, color: Colors.white),
-                          onPressed: _sendMessage,
-                        ),
-                      ),
-                    ],
                   ),
-                ),
-              ],
-            );
-          }
-
-          return const Center(child: Text('Initializing chat...'));
-        },
+                  // Message Input
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, -2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _messageController,
+                            decoration: InputDecoration(
+                              hintText: 'Type a message...',
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(24),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.shade100,
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                            ),
+                            onSubmitted: (_) => _sendMessage(),
+                            maxLines: null,
+                            textInputAction: TextInputAction.send,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          decoration: const BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.send, color: Colors.white),
+                            onPressed: _sendMessage,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+        
+            return const Center(child: Text('Initializing chat...'));
+          },
+        ),
       ),
     );
   }

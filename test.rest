@@ -6,8 +6,8 @@ POST http://localhost:3000/api/signup
 Content-Type: application/json
 
 {
-  "username": "a",
-  "password": "a"
+  "username": "panther",
+  "password": "@wakanda"
 }
 
 ### LOGIN
@@ -27,7 +27,7 @@ DELETE https://interroad-nontragical-odessa.ngrok-free.dev/api/deleteUser
 Content-Type: application/json
 
 {
-  "username": "Aragorn"
+  "username": "bilbo"
 }
 
 ###SHOW ALL MESSAGES

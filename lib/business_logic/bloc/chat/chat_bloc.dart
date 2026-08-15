@@ -13,7 +13,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final SocketService _socketService = SocketService();
   final Uuid _uuid = const Uuid();
 
-  String currentUserId = ''; 
+  String currentUserId = '';
   List<Message> messages = [];
 
   ChatBloc() : super(ChatInitial()) {
@@ -34,25 +34,18 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatLoading());
 
       currentUserId = event.userId;
-      //messages.clear();
-      //print('🚮Local messages list cleared on Connect socket');//FIXME:
-
-      
-
 
       // Connect to socket
       _socketService.connect(event.userId);
 
-      
       // Listen for incoming messages
-      _socketService.onMessageReceived((message) {//TODO: Study this function in detail. VERY USEFUL!! UNDERSTAND THE CODE FLOW
+      _socketService.onMessageReceived((message) {
+        //TODO: Study this function in detail. VERY USEFUL!! UNDERSTAND THE CODE FLOW
         //This runs when a message is received from the socket
         // Add event to BLoC when message is received
-        print('🧣Running ReceiveMessageEvent');
+        print('🧣qRunning ReceiveMessageEvent');
         add(ReceiveMessageEvent(message: message));
       });
-
-      
 
       emit(ChatConnected(messages: messages, isConnected: true));
     } catch (e) {
@@ -82,7 +75,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
 
       // Add to local list
-      messages.add(message); 
+      messages.add(message);
       print(
         '📩Message: ${message.text}, Sender: ${message.senderId}, Receiver: ${message.receiverId}',
       );
@@ -91,7 +84,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
       // Update state
       if (state is ChatConnected) {
-        print('👺Local List content in _sendMessage:${messages.length}');//FIXME:Debug code
+        print(
+          '👺Local List content in _sendMessage:${messages.length}',
+        ); 
         emit(ChatConnected(messages: messages, isConnected: true));
       }
     } catch (e) {
@@ -101,17 +96,17 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   // Handle receiving message
   void _onReceiveMessage(ReceiveMessageEvent event, Emitter<ChatState> emit) {
-  
-    
     print('🚩_onReceiveMessage code running');
     // Add received message to list
     messages.add(event.message);
+    print('💬A message added to local list-> CURRENTUSERID: ${currentUserId}, MESSAGE: ${messages[0]}');//FIXME: Debug
 
     if (state is ChatConnected) {
-      print('👺Local List content in _onReceiveMessage:${messages.length}');//FIXME:Debug code
+      print(
+        '👺Local List content in _onReceiveMessage:${messages.length}',
+      ); 
       emit(ChatConnected(messages: messages, isConnected: true));
     }
-  //messages.clear();//FIXME:So that the whole local list doesnt get built again in UI
   }
 
   void _onFetchChatHistory(
@@ -140,15 +135,11 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       emit(ChatError(error: '❌Failed to fetch chat history: $e'));
     }
   }
-  
-  void _onClearMessages(
-    ClearMessageEvent event,
-    Emitter<ChatState> emit,
-  ) {
+
+  void _onClearMessages(ClearMessageEvent event, Emitter<ChatState> emit) {
     messages.clear();
     print('Local message list cleared. Current length: ${messages.length}');
   }
-  
 
   @override
   Future<void> close() {
