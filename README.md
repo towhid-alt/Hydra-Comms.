@@ -18,4 +18,4 @@ This is a simple real time- messaging chat app that allows hydra clan to text ea
 
 ##  App Demo
 
-![App Demo](screenshots/HydraComms.gif)
+<img src="screenshots/HydraComms.gif" width="500">
