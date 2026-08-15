@@ -1,17 +1,21 @@
-# chat_app
+# Hydra Comms. - A chat app that hails Hydra
 
-A new Flutter project.
+This is a simple real time- messaging chat app that allows hydra clan to text each other. I have made this project just to learn flutter BLoC state management code flow.
 
-## Getting Started
+## Tech Stack
 
-This project is a starting point for a Flutter application.
+Programming Languages - Dart, JavaScript, SQL
+Frameworks - Node.js, Express.js
+Tools - Socket.IO, PostgreSQL, REST APIs
 
-A few resources to get you started if this is your first Flutter project:
+## Screenshots
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+<p>
+  <img src="screenshots/login.png" width="250">
+  <img src="screenshots/home.png" width="250">
+  <img src="screenshots/chat.png" width="250">
+</p>
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🎥 App Demo
+
+![App Demo](screenshots/HydraComms.gif)
