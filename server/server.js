@@ -13,8 +13,8 @@ const server = http.createServer(app)
 const io = new Server(server, {
     cors: {
         origin: "*", // Allow all origins for now
-    // Allows connections from ANY website/domain
-    methods: ["GET", "POST"]//Only allow GET and POST requests
+        // Allows connections from ANY website/domain
+        methods: ["GET", "POST"]//Only allow GET and POST requests
     }
 })
 
@@ -36,39 +36,43 @@ io.on('connection', (socket) => {
         console.log(`User ${userId} connected`);
     }
 
-  // Handle disconnection
-  socket.on('disconnect', () => {
-    if (userId) {
-      delete onlineUsers[userId];
-      console.log(`User ${userId} disconnected`);
-    }
-  });
+    // Handle disconnection
+    socket.on('disconnect', () => {
+        if (userId) {
+            delete onlineUsers[userId];
+            console.log(`User ${userId} disconnected`);
+        }
+    });
 
-  socket.on('sendMessage', async(data) => {
-    query = `INSERT INTO messages (sender_id, receiver_id, text) VALUES ($1, $2, $3) RETURNING *`;
-    const values = [data.senderId, data.receiverId, data.text];
-    try {
-      const result = await pool.query(query, values);
-      console.log('Message saved to database:', result.rows[0]);
+    socket.on('sendMessage', async (data) => {
+        query = `INSERT INTO messages (sender_id, receiver_id, text) VALUES ($1, $2, $3) RETURNING *`;
+        const values = [data.senderId, data.receiverId, data.text];
+        try {
+            const result = await pool.query(query, values);
+            console.log('Message saved to database:', result.rows[0]);
 
-      // Emit message to both sender and receiver
-      console.log('🚩Emitting message to both sender and receiver');
-      const senderId = onlineUsers[data.senderId]
-      const receiverId = onlineUsers[data.receiverId]
-      if(senderId){
-        io.to(senderId.toString()).emit('receiveMessage', result.rows[0]);
-      }
-      if(receiverId){
-        io.to(receiverId.toString()).emit('receiveMessage', result.rows[0]);
-      }
-      
-    } catch (error) {
-      console.error('Error saving message to database:', error);
-    }
-  })
+            // Emit message to both sender and receiver
+            const senderId = onlineUsers[data.senderId]
+            const receiverId = onlineUsers[data.receiverId]
+            /*if (senderId) {
+                console.log('🚩Emiting to sender ID')
+                io.to(senderId.toString()).emit('receiveMessage', result.rows[0]);
+
+            }*///TODO: Omiting emit for senderID for now, Include it later
+            if (receiverId) {
+                console.log("Online users: ", onlineUsers)
+                console.log(`🚩Emiting to receiver ID: ${receiverId}`)
+
+                io.to(receiverId.toString()).emit('receiveMessage', result.rows[0]);
+            }
+
+        } catch (error) {
+            console.error('Error saving message to database:', error);
+        }
+    })
 });
 
-app.get('/test', (req,res) => {
+app.get('/test', (req, res) => {
     console.log('Test done. Endpoint is working');
     res.send('Test done. Endpoint is working');
 });
@@ -79,46 +83,46 @@ server.listen(PORT, () => {
 
 app.post('/api/signup', async (req, res) => {
     try {
-    const {username, password} = req.body
-    // Hash the password before storing it
-    const hashedPassword = await bcrypt.hash(password, 10)
-    //Check if user already exists
-     const userExists = await pool.query(
-      'SELECT * FROM users WHERE username = $1',
-      [username]
-    )
+        const { username, password } = req.body
+        // Hash the password before storing it
+        const hashedPassword = await bcrypt.hash(password, 10)
+        //Check if user already exists
+        const userExists = await pool.query(
+            'SELECT * FROM users WHERE username = $1',
+            [username]
+        )
 
-    if (userExists.rows.length > 0) {
-      return res.status(400).json({ error: 'User already exists' })
+        if (userExists.rows.length > 0) {
+            return res.status(400).json({ error: 'User already exists' })
+        }
+        //Insert new user into the database
+        const newUser = await pool.query(
+            `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username`,
+            [username, hashedPassword]
+        )
+        console.log('New user signed up:', username)
+        res.status(201).json(newUser.rows[0])
+    } catch (error) {
+        console.error('Error signing up user:', error)
+        res.status(500).json({ error: 'Internal server error' })
     }
-    //Insert new user into the database
-    const newUser = await pool.query(
-        `INSERT INTO users (username, password) VALUES ($1, $2) RETURNING id, username`,
-        [username, hashedPassword]
-    )
-    console.log('New user signed up:', username)
-    res.status(201).json(newUser.rows[0])
-} catch (error) {
-    console.error('Error signing up user:', error)
-    res.status(500).json({ error: 'Internal server error' })
-}
 });
 
 //---------------LOGIN ENDPOINT----------------
-app.post('/api/login', async (req,res) => {
-    try{
-        const {username, password} = req.body
+app.post('/api/login', async (req, res) => {
+    try {
+        const { username, password } = req.body
         //Check if user exists
         const user = await pool.query(
             'SELECT * FROM users WHERE username = $1',
             [username]
         )
         console.log('The value of user.id is:', user.rows[0].id)
-        if (user.rows.length === 0 ) {
+        if (user.rows.length === 0) {
             return res.status(400).json({ error: 'Invalid username' })
         }
         //password comparison
-        const validPassword = await bcrypt.compare(password, user.rows[0].password) 
+        const validPassword = await bcrypt.compare(password, user.rows[0].password)
         if (!validPassword) {
             return res.status(400).json({ error: 'Invalid password' })
         }
@@ -126,7 +130,7 @@ app.post('/api/login', async (req,res) => {
         console.log(`User ${username} logged in successfully with userId: ${userId}`)
         res.status(200).json({ message: 'Login successful', userId: userId })
     } catch (error) {
-        console.error('Error logging in user:', error) 
+        console.error('Error logging in user:', error)
         res.status(500).json({ error: 'Internal server error' })
     }
 })
@@ -162,7 +166,7 @@ app.get('/api/chat/:currentUserId/:receiverId', async (req, res) => {
 
 //-------------SHOW ALL MESSAGES----------------
 app.get('/api/messages', async (req, res) => {
-    try{
+    try {
         const chats = await pool.query(`SELECT * FROM messages`)
         res.status(200).json(chats.rows);
     } catch (error) {
@@ -172,8 +176,8 @@ app.get('/api/messages', async (req, res) => {
 })
 
 //------------DELETE ALL MESSAEGS----------------
-app.delete('/api/deleteMessages', async (req,res) => {
-    try{
+app.delete('/api/deleteMessages', async (req, res) => {
+    try {
         const result = await pool.query('DELETE FROM messages')
         console.log('All messages deleted successfully');
         res.status(200).json({ message: 'All messages deleted successfully', deletedCount: result.rowCount })
@@ -184,21 +188,21 @@ app.delete('/api/deleteMessages', async (req,res) => {
 })
 
 //---------------DELETE A USER-----------------------
-app.delete('/api/deleteUser', async (req,res) => {
+app.delete('/api/deleteUser', async (req, res) => {
     try {
-        const {username} = req.body
+        const { username } = req.body
         const result = await pool.query('DELETE FROM users WHERE username=$1', [username])
-        
-         // Check if any user was actually deleted
+
+        // Check if any user was actually deleted
         if (result.rowCount === 0) {
-            return res.status(404).json({ 
-                error: 'User not found' 
+            return res.status(404).json({
+                error: 'User not found'
             });
         }
-        res.status(200).json({ message: 'Delete successful', deletedUser: username})
+        res.status(200).json({ message: 'Delete successful', deletedUser: username })
     } catch (e) {
         console.error('Error deleting user: ', e)
-        res.status(500).json({error: 'Internal server error'})
+        res.status(500).json({ error: 'Internal server error' })
     }
 })
 

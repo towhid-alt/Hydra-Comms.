@@ -48,7 +48,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       _socketService.onMessageReceived((message) {//TODO: Study this function in detail. VERY USEFUL!! UNDERSTAND THE CODE FLOW
         //This runs when a message is received from the socket
         // Add event to BLoC when message is received
-        print('🚩Running ReceiveMessageEvent');
+        print('🧣Running ReceiveMessageEvent');
         add(ReceiveMessageEvent(message: message));
       });
 
@@ -111,7 +111,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       print('👺Local List content in _onReceiveMessage:${messages.length}');//FIXME:Debug code
       emit(ChatConnected(messages: messages, isConnected: true));
     }
-  messages.clear();//FIXME:So that the whole local list doesnt get built again in UI
+  //messages.clear();//FIXME:So that the whole local list doesnt get built again in UI
   }
 
   void _onFetchChatHistory(
@@ -133,7 +133,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
             .map((messageJson) => Message.fromJson(messageJson))
             .toList();
 
-        messages.addAll(fetchedMessages);
+        //messages.addAll(fetchedMessages);//FIXME: There is no need to add to local list here
         emit(ChatConnected(messages: fetchedMessages, isConnected: true));
       }
     } catch (e) {

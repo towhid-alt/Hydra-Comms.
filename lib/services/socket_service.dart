@@ -53,7 +53,7 @@ class SocketService {
   // Listen for incoming messages
 void onMessageReceived(Function(Message) callback) {
   print('🟢 Registering onMessageReceived listener');
-  
+  socket.off('receiveMessage');
   socket.on('receiveMessage', (data) {
     print('🚩socket.on of receiveMessage event running');
     print('📦 Received data: $data');

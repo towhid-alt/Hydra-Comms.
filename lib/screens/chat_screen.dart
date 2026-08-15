@@ -130,7 +130,7 @@ class _ChatScreenState extends State<ChatScreen> {
               children: [
                 // Messages List
                 Expanded(
-                  child: state.messages.isEmpty
+                  child: state.messages.isEmpty//TODO: This is causing the problem when you empty the local list
                       ? const Center(
                           child: Text(
                             'No messages yet',
