@@ -4,9 +4,9 @@ This is a simple real time- messaging chat app that allows hydra clan to text ea
 
 ## Tech Stack
 
-Programming Languages - Dart, JavaScript, SQL
-Frameworks - Node.js, Express.js
-Tools - Socket.IO, PostgreSQL, REST APIs
+**Programming Languages -** Dart, JavaScript, SQL
+**Frameworks -** Node.js, Express.js
+**Tools -** Socket.IO, PostgreSQL, REST APIs
 
 ## Screenshots
 
@@ -16,6 +16,6 @@ Tools - Socket.IO, PostgreSQL, REST APIs
   <img src="screenshots/chat.png" width="250">
 </p>
 
-## 🎥 App Demo
+##  App Demo
 
 ![App Demo](screenshots/HydraComms.gif)
